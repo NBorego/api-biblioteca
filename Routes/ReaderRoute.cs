@@ -7,7 +7,7 @@ namespace APIBiblioteca.Routes
     {
         public static void ReaderRoutes(this WebApplication app)
         {
-            var route = app.MapGroup("api/v1/reader");
+            var route = app.MapGroup("/api/v1/reader");
 
             // GetAll
             route.MapGet("", async(int pageNumber, int pageQuantity, IReaderService service) =>
@@ -34,7 +34,7 @@ namespace APIBiblioteca.Routes
                 {
                     var readerSuccess = readerResult.GetSuccessResult();
 
-                    return Results.Created($"api/v1/users/{readerSuccess.Id}", readerSuccess);
+                    return Results.Created($"api/v1/reader/{readerSuccess.Id}", readerSuccess);
                 }
 
                 var errorObj = readerResult.GetErrorResult();

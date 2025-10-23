@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OneOf;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace APIBiblioteca.Services
 {
@@ -44,9 +45,9 @@ namespace APIBiblioteca.Services
             if (dto.Address.Trim().Length > 150)
                 return new InvalidReaderAddressError();
 
-            var isValidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
+            var isInvalidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
 
-            if (!isValidReaderName || dto.Name.Trim().Length > 100)
+            if (isInvalidReaderName || dto.Name.Trim().Length > 100)
                 return new InvalidReaderNameError();
 
             var newReader = new Reader(dto.Name.Trim(), dto.Address.Trim(), dto.Phone.Trim());
@@ -67,9 +68,9 @@ namespace APIBiblioteca.Services
             if (dto.Address.Trim().Length > 150)
                 return new InvalidReaderAddressError();
 
-            var isValidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
+            var isInvalidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
 
-            if (!isValidReaderName || dto.Name.Trim().Length > 100)
+            if (isInvalidReaderName || dto.Name.Trim().Length > 100)
                 return new InvalidReaderNameError();
 
             var reader = new Reader(dto.Name.Trim(), dto.Address.Trim(), dto.Phone.Trim());

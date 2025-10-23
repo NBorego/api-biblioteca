@@ -12,4 +12,4 @@ namespace APIBiblioteca.Extensions
         public static AppError GetErrorResult<TResult>(this OneOf<TResult, AppError> obj) => obj.AsT1;
     }
 }
-}
+
