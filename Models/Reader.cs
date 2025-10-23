@@ -12,6 +12,7 @@ namespace APIBiblioteca.Models
         [Required]
         [MaxLength(100)]
         public string Name { get; private set; } = name;
+
         [MaxLength(150)]
         public string Address { get; private set; } = address;
 

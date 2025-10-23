@@ -39,12 +39,15 @@ namespace APIBiblioteca.Services
         public async Task<OneOf<ReaderDTO, AppError>> SaveAsync(ReaderDTO dto)
         {
             if (dto.Phone.Trim().Length != 11)
-                return new InvalidReaderPhone();
+                return new InvalidReaderPhoneError();
 
-            var isValidReaderName = Regex.Match(dto.Name, @"[^a-zA-Z\s]");
+            if (dto.Address.Trim().Length > 150)
+                return new InvalidReaderAddressError();
 
-            if (isValidReaderName.Success)
-                return new InvalidReaderName();
+            var isValidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
+
+            if (!isValidReaderName || dto.Name.Trim().Length > 100)
+                return new InvalidReaderNameError();
 
             var newReader = new Reader(dto.Name.Trim(), dto.Address.Trim(), dto.Phone.Trim());
 
@@ -59,12 +62,15 @@ namespace APIBiblioteca.Services
         public async Task<OneOf<ReaderDTO, AppError>> UpdateAsync(Guid id, ReaderDTO dto)
         {
             if (dto.Phone.Trim().Length != 11)
-                return new InvalidReaderPhone();
+                return new InvalidReaderPhoneError();
 
-            var isValidReaderName = Regex.Match(dto.Name, @"[^a-zA-Z\s]");
+            if (dto.Address.Trim().Length > 150)
+                return new InvalidReaderAddressError();
 
-            if (isValidReaderName.Success)
-                return new InvalidReaderName();
+            var isValidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
+
+            if (!isValidReaderName || dto.Name.Trim().Length > 100)
+                return new InvalidReaderNameError();
 
             var reader = new Reader(dto.Name.Trim(), dto.Address.Trim(), dto.Phone.Trim());
 
