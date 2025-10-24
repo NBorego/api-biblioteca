@@ -22,6 +22,9 @@ namespace APIBiblioteca.Routes
             {
                 var reader = await service.GetByIdAsync(id);
 
+                if (reader == null)
+                    return Results.NotFound();
+
                 return Results.Ok(reader);
             });
 

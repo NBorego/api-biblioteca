@@ -3,5 +3,8 @@
 namespace APIBiblioteca.Errors
 {
     public record InvalidReaderNameError() :
-        AppError("O nome do leitor deve conter somente letras e até 100 caracteres.", ErrorType.Validation);
+        AppError(
+            "O nome do leitor deve conter apenas letras, ter no máximo 100 caracteres e não pode ficar em branco.", 
+            ErrorType.Validation
+        );
 }

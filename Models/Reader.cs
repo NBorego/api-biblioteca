@@ -19,5 +19,7 @@ namespace APIBiblioteca.Models
         [MaxLength(11)]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "O telefone deve conter exatamente 11 dígitos.")]
         public string Phone { get; private set; } = phone;
+
+        public ICollection<Loan> Loans { get; private set; } = new List<Loan>();
     }
 }
