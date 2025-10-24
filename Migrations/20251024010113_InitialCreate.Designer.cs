@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIBiblioteca.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023220416_InitialCreate")]
+    [Migration("20251024010113_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,33 @@ namespace APIBiblioteca.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("APIBiblioteca.Models.Loan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("BookName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<Guid>("ReaderId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ReturnDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("Returned")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReaderId");
+
+                    b.ToTable("Loans");
+                });
 
             modelBuilder.Entity("APIBiblioteca.Models.Reader", b =>
                 {
@@ -49,6 +76,22 @@ namespace APIBiblioteca.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Readers");
+                });
+
+            modelBuilder.Entity("APIBiblioteca.Models.Loan", b =>
+                {
+                    b.HasOne("APIBiblioteca.Models.Reader", "Reader")
+                        .WithMany("Loans")
+                        .HasForeignKey("ReaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reader");
+                });
+
+            modelBuilder.Entity("APIBiblioteca.Models.Reader", b =>
+                {
+                    b.Navigation("Loans");
                 });
 #pragma warning restore 612, 618
         }

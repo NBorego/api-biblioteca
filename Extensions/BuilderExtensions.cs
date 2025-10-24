@@ -21,6 +21,7 @@ namespace APIBiblioteca.Extensions
         public static void AddServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IReaderService, ReaderService>();
+            builder.Services.AddScoped<ILoanService, LoanService>();
         }
 
     }
