@@ -7,6 +7,7 @@ namespace APIBiblioteca.Extensions
         public static void AddRoutes(this WebApplication app)
         {
             app.ReaderRoutes();
+            app.LoanRoutes();
         }
     }
 }

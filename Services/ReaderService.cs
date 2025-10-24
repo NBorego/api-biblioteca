@@ -17,13 +17,23 @@ namespace APIBiblioteca.Services
 
         public async Task<object> GetAllAsync(int pageNumber, int pageQuantity)
         {
+            var total = await _context.Readers.CountAsync();
+
+            var totalPages = (int)Math.Ceiling(total / (double)pageQuantity);
+
             var readers = await _context.Readers
-                .Skip(pageNumber)
+                .Skip(pageNumber * pageQuantity)
                 .Take(pageQuantity)
                 .Select(r => new ReaderDTO(r.Id, r.Name, r.Address, r.Phone))
                 .ToListAsync();
 
-            return readers;
+            return new
+            {
+                total,
+                totalPages,
+                pageNumber,
+                readers
+            };
         }
         public async Task<ReaderDTO?> GetByIdAsync(Guid id)
         {
@@ -47,7 +57,7 @@ namespace APIBiblioteca.Services
 
             var isInvalidReaderName = Regex.IsMatch(dto.Name, @"[^\p{L}\s]", RegexOptions.Compiled);
 
-            if (isInvalidReaderName || dto.Name.Trim().Length > 100)
+            if (string.IsNullOrWhiteSpace(dto.Name) || isInvalidReaderName || dto.Name.Trim().Length > 100)
                 return new InvalidReaderNameError();
 
             var newReader = new Reader(dto.Name.Trim(), dto.Address.Trim(), dto.Phone.Trim());
