@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace APIBiblioteca.Models
 {
-    public class Loan(string bookName, DateTime returnDate, Guid readerId)
+    public class Loan(string bookName, Guid readerId)
     {
         public Guid Id { get; init; } = Guid.NewGuid();
 
         [MaxLength(100)]
         public string BookName { get; private set; } = bookName;
-        [Required]
-        public DateTime ReturnDate { get; private set; } = returnDate;
+
+        public DateTime ReturnDate { get; private set; } = DateTime.Now.AddDays(7);
         public bool Returned { get; private set; } = false;
 
         [Required]
@@ -23,9 +23,9 @@ namespace APIBiblioteca.Models
             Returned = !Returned;
         }
 
-        internal void ExtendDate()
+        public void ExtendDate()
         {
-            ReturnDate.AddDays(7);
+            ReturnDate = ReturnDate.AddDays(7);
         }
     }
 }

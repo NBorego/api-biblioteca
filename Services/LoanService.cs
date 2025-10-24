@@ -34,7 +34,7 @@ namespace APIBiblioteca.Services
             };
         }
 
-        public async Task<object?> GetAllByReaderIdAsync(Guid id, int pageNumber, int pageQuantity)
+        public async Task<object> GetAllByReaderIdAsync(Guid id, int pageNumber, int pageQuantity)
         {
             var total = await _context.Loans
                 .Where(l => l.ReaderId == id)
@@ -44,7 +44,6 @@ namespace APIBiblioteca.Services
 
             var loans = await _context.Loans
                 .Where(l => l.ReaderId == id)
-                .OrderBy(l => l.BookName)
                 .Skip(pageNumber * pageQuantity)
                 .Take(pageQuantity)
                 .Select(l => new LoanDTO(l.Id, l.BookName, l.ReturnDate, l.Returned, l.ReaderId))
@@ -58,6 +57,7 @@ namespace APIBiblioteca.Services
                 loans
             };
         }
+
         public async Task<LoanDTO?> GetByIdAsync(Guid id)
         {
             var loan = await _context.Loans.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
@@ -74,15 +74,15 @@ namespace APIBiblioteca.Services
             if (string.IsNullOrWhiteSpace(dto.BookName) || dto.BookName.Trim().Length > 100)
                 return new InvalidBookNameError();
 
-            var newLoan = new LoanDTO(dto.Id, dto.BookName.Trim(), dto.ReturnDate, dto.Returned, dto.ReaderId);
+            var newLoan = new Loan(dto.BookName.Trim(), dto.ReaderId);
 
             await _context.AddAsync(newLoan);
             await _context.SaveChangesAsync();
 
             var dtoReturn = new LoanDTO(
                 newLoan.Id, 
-                newLoan.BookName, 
-                newLoan.ReturnDate, 
+                newLoan.BookName,
+                newLoan.ReturnDate,
                 newLoan.Returned, 
                 newLoan.ReaderId
             );

@@ -19,7 +19,7 @@ namespace APIBiblioteca.Routes
             });
 
             // GetAllByReaderId
-            route.MapGet("{id:guid}/loans", async (Guid readerId, int pageNumber, int pageQuantity, ILoanService service) =>
+            route.MapGet("{readerId:guid}/loans", async (Guid readerId, int pageNumber, int pageQuantity, ILoanService service) =>
             {
                 var loans = await service.GetAllByReaderIdAsync(readerId, pageNumber, pageQuantity);
 
@@ -58,7 +58,7 @@ namespace APIBiblioteca.Routes
             });
 
             // UpdateReturnDate
-            route.MapPut("{guid:id}", async (Guid id, ILoanService service) =>
+            route.MapPut("{id:guid}", async (Guid id, ILoanService service) =>
             {
                 var loan = await service.UpdateReturnDateAsync(id);
 
@@ -69,7 +69,7 @@ namespace APIBiblioteca.Routes
             });
 
             // MarkAsReturned
-            route.MapPut("{guid:id}/returned", async (Guid id, ILoanService service) =>
+            route.MapPut("{id:guid}/returned", async (Guid id, ILoanService service) =>
             {
                 var loan = await service.MarkAsReturnedAsync(id);
 
@@ -80,7 +80,7 @@ namespace APIBiblioteca.Routes
             });
 
             // Delete
-            route.MapDelete("{guid:id}", async (Guid id, ILoanService service) =>
+            route.MapDelete("{id:guid}", async (Guid id, ILoanService service) =>
             {
                 await service.DeleteAsync(id);
 
