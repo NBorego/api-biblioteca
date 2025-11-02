@@ -1,5 +1,6 @@
 ﻿using APIBiblioteca.DTO;
 using APIBiblioteca.Services.Interfaces;
+using System.Xml.Linq;
 
 namespace APIBiblioteca.Routes
 {
@@ -10,9 +11,9 @@ namespace APIBiblioteca.Routes
             var route = app.MapGroup("/api/v1/reader");
 
             // GetAll
-            route.MapGet("", async(int pageNumber, int pageQuantity, IReaderService service) =>
+            route.MapGet("", async(int pageNumber, int pageQuantity, string name, IReaderService service) =>
             {
-                var readers = await service.GetAllAsync(pageNumber, pageQuantity);
+                var readers = await service.GetAllAsync(pageNumber, pageQuantity, name);
 
                 return Results.Ok(readers);
             });

@@ -15,13 +15,19 @@ namespace APIBiblioteca.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<object> GetAllAsync(int pageNumber, int pageQuantity)
+        public async Task<object> GetAllAsync(int pageNumber, int pageQuantity, string name)
         {
-            var total = await _context.Readers.CountAsync();
+            var query = _context.Readers.AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(r => r.Name.Contains(name));
+            }
+
+            var total = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(total / (double)pageQuantity);
 
-            var readers = await _context.Readers
+            var readers = await query
                 .Skip(pageNumber * pageQuantity)
                 .Take(pageQuantity)
                 .Select(r => new ReaderDTO(r.Id, r.Name, r.Address, r.Phone))
@@ -35,6 +41,7 @@ namespace APIBiblioteca.Services
                 readers
             };
         }
+
         public async Task<ReaderDTO?> GetByIdAsync(Guid id)
         {
             var reader = await _context.Readers.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
