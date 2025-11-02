@@ -11,17 +11,17 @@ namespace APIBiblioteca.Routes
             var route = app.MapGroup("/api/v1/loan");
 
             // GetAll
-            route.MapGet("", async (int pageNumber, int pageQuantity, ILoanService service) =>
+            route.MapGet("", async (int pageNumber, int pageQuantity, string bookName, ILoanService service) =>
             {
-                var loans = await service.GetAllAsync(pageNumber, pageQuantity);
+                var loans = await service.GetAllAsync(pageNumber, pageQuantity, bookName);
 
                 return loans;
             });
 
             // GetAllByReaderId
-            route.MapGet("{readerId:guid}/loans", async (Guid readerId, int pageNumber, int pageQuantity, ILoanService service) =>
+            route.MapGet("{readerId:guid}/loans", async (Guid readerId, int pageNumber, int pageQuantity, string bookName, ILoanService service) =>
             {
-                var loans = await service.GetAllByReaderIdAsync(readerId, pageNumber, pageQuantity);
+                var loans = await service.GetAllByReaderIdAsync(readerId, pageNumber, pageQuantity, bookName);
 
                 if (loans == null)
                     return Results.NotFound();

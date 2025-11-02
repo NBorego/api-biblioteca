@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OneOf;
 using System;
 using System.Reflection.PortableExecutable;
+using System.Xml.Linq;
 
 namespace APIBiblioteca.Services
 {
@@ -14,12 +15,19 @@ namespace APIBiblioteca.Services
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<object> GetAllAsync(int pageNumber, int pageQuantity)
+        public async Task<object> GetAllAsync(int pageNumber, int pageQuantity, string bookName)
         {
-            var total = await _context.Loans.CountAsync();
+            var query = _context.Loans.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(bookName))
+            {
+                query = query.Where(r => r.BookName.Contains(bookName));
+            }
+
+            var total = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(total / (double)pageQuantity);
 
-            var loans = await _context.Loans
+            var loans = await query
                 .Skip(pageNumber * pageQuantity)
                 .Take(pageQuantity)
                 .Select(l => new LoanDTO(l.Id, l.BookName, l.ReturnDate, l.Returned, l.ReaderId))
@@ -34,16 +42,20 @@ namespace APIBiblioteca.Services
             };
         }
 
-        public async Task<object> GetAllByReaderIdAsync(Guid id, int pageNumber, int pageQuantity)
+        public async Task<object> GetAllByReaderIdAsync(Guid id, int pageNumber, int pageQuantity, string bookName)
         {
-            var total = await _context.Loans
-                .Where(l => l.ReaderId == id)
-                .CountAsync();
+            var query = _context.Loans
+                .Where(l => l.ReaderId == id);
 
+            if (!string.IsNullOrWhiteSpace(bookName))
+            {
+                query = query.Where(l => l.BookName.Contains(bookName));
+            }
+
+            var total = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(total / (double)pageQuantity);
 
-            var loans = await _context.Loans
-                .Where(l => l.ReaderId == id)
+            var loans = await query
                 .Skip(pageNumber * pageQuantity)
                 .Take(pageQuantity)
                 .Select(l => new LoanDTO(l.Id, l.BookName, l.ReturnDate, l.Returned, l.ReaderId))
